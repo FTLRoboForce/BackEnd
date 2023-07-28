@@ -57,17 +57,19 @@ router.post("/quiz", async function (req, res, next) {
   let content = `Create ${number} unique ${difficultyLevel} multiple-choice questions about ${subject} specifically ${optionalSection}.
   Depending on the difficulty level, the questions should be more difficult. Hard questions should be more difficult than medium questions. 
   Medium questions should be meant for graduate students and hard questions should be meant for experienced professionals in their respective fields .
-   Easy questions should be meant for high school students.
-  The answer should be a string (the answer must be 
-      in the options and not as an index of the options)
-      and the options should be an array of strings. 
-      All keys and values must be enclosed in double quotes.
-  ### store as an array of json objects where the question,options and answer are keys:
-  {"question": "What is the capital of France?","options": ["New York", "London", "Paris", "Dublin"],"answer": "Paris"}`;
+   Easy questions should be meant for high school students.`;
   try {
     const response = await openAi.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
+        {
+          role: "system",
+          content: `Response should be returned as an array of json objects where the response would look like:
+          The answer should be a string (the answer must be in the options and not as an index of the options) and the options should be an array of strings. 
+          All keys and values must be enclosed in double quotes.
+          ### store as an array of json objects where the question,options and answer are keys:
+          {"question": "What is the capital of France?","options": ["New York", "London", "Paris", "Dublin"],"answer": "Paris"}`
+        },
         {
           role: "user",
           content: content

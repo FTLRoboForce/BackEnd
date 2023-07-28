@@ -16,12 +16,16 @@ router.post("/flashcards", async function (req, res, next) {
   Depending on the difficulty level, the questions should be more difficult. Medium should be more difficult than easy.
    Hard questions should be more difficult than medium questions. 
   Medium questions should be meant for graduate students and hard questions should be meant for experts.
-  Response should be returned as an array of json objects where the response would look like:
-  [{"question" : "What is the general formula for alkane?", "answer": "CnH2n+2"}]`;
+  `;
   try {
     const response = await openAi.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
+        {
+          role: "system",
+          content: `Response should be returned as an array of json objects where the response would look like:
+          [{"question" : "What is the general formula for alkane?", "answer": "CnH2n+2"}]`
+        },
         {
           role: "user",
           content: content

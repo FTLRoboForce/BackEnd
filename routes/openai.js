@@ -98,8 +98,8 @@ router.post("/quiz", async function (req, res, next) {
 });
 
 router.post("/challenge", async function (req, res, next) {
-  const { question, answer } = req.body;
-  let content = `I believe the answer to ${question} is ${answer}. Please respond true if I am correct and false if I am incorrect.`;
+  const { question, answer, options } = req.body;
+  let content = `I believe the answer to ${question} is ${answer}. The choices I was given are ${options} Please only respond "true" if I am correct and "false" if I am incorrect.`;
   try {
     const response = await openAi.createChatCompletion({
       model: "gpt-3.5-turbo",

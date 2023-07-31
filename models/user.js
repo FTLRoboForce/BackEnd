@@ -25,6 +25,7 @@ class User {
       lastname,
       username,
       points,
+      photo,
       totalquiz
     } = creds;
     const requiredCreds = [
@@ -74,9 +75,10 @@ class User {
           username,
           email,
           points,
+          photo,
           totalquiz
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id,
                   email,            
                   firstname AS "firstname",
@@ -90,6 +92,7 @@ class User {
         username,
         normalizedEmail,
         points,
+        photo,
         totalquiz
       ]
     );
@@ -158,6 +161,7 @@ class User {
               username,
               points,
               created,
+              photo,
               totalquiz
             FROM users
             ORDER BY points DESC`
@@ -199,6 +203,7 @@ class User {
       email: user.email,
       username: user.username,
       points: user.points,
+      photo: user.photo,
       totalquiz: user.totalquiz
     };
 

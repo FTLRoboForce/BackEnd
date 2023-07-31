@@ -43,6 +43,7 @@ router.post("/update", async function (req, res, next) {
 
 router.post("/addquiz", async function (req, res, next) {
   try {
+    console.log(req.body);
     const quiz = await User.addQuiz(req.body);
     res.json(quiz);
   } catch (err) {

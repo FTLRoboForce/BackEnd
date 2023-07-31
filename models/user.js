@@ -137,6 +137,51 @@ class User {
     }
   }
 
+  static async addQuiz(quiz) {
+    const { userid, questions, points, subject, difficulty } = quiz;
+    const result = await db.query(
+      `INSERT INTO quiz (
+          userid,
+          questions,
+          points,
+          subject,
+          difficulty
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id,
+                  userid, 
+                  questions,
+                  points,
+                  subject,
+                  difficulty
+                  `,
+      [userid, questions, points, subject, difficulty]
+    );
+
+    const quizResult = result.rows[0];
+
+    return quizResult;
+  }
+
+  static async listQuiz({ userid }) {
+    const result = await db.query(
+      `SELECT id,
+              userid,
+              questions,
+              points,
+              subject,
+              difficulty
+            FROM quiz
+            WHERE userid = $1
+            ORDER BY id DESC`,
+      [userid]
+    );
+
+    const quiz = result.rows;
+
+    return quiz;
+  }
+
   static async updateUser(update) {
     const { email, points } = update;
 

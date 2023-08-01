@@ -41,6 +41,25 @@ router.post("/update", async function (req, res, next) {
   }
 });
 
+router.post("/addquiz", async function (req, res, next) {
+  try {
+    console.log(req.body);
+    const quiz = await User.addQuiz(req.body);
+    res.json(quiz);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/listquiz", async function (req, res, next) {
+  try {
+    const quiz = await User.listQuiz(req.body);
+    res.json(quiz);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/list", async function (req, res, next) {
   try {
     const users = await User.fetchAll();

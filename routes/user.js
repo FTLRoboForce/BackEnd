@@ -50,4 +50,22 @@ router.get("/list", async function (req, res, next) {
   }
 });
 
+
+
+
+router.post("/photo", async function (req, res, next) {
+
+  try {
+  
+    console.log("req.body", req.body);
+    const user = await User.updatePhoto(req.body);
+    if (user) {
+      const token = await User.generateAuthToken(user);
+      res.json({ token });
+    } 
+  } catch (err) {
+    next(err);
+  }
+} );
+
 module.exports = router;

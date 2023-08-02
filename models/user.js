@@ -1,7 +1,6 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const { BadRequestError, UnauthorizedError } = require("../utils/errors");
-const { validateFields } = require("../utils/validate");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const secretKey = crypto.randomBytes(64).toString("hex");
@@ -37,15 +36,6 @@ class User {
       "points",
       "totalquiz"
     ];
-    try {
-      validateFields({
-        required: requiredCreds,
-        obj: creds,
-        location: "user registration"
-      });
-    } catch (err) {
-      throw err;
-    }
 
     if (password.length < 8) {
       throw new BadRequestError("Password must be at least 8 characters");

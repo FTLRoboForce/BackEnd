@@ -122,7 +122,7 @@ describe("User Model - register", () => {
 
     // Call the register function and expect it to throw BadRequestError
     await expect(User.register(creds)).rejects.toThrow(
-      new BadRequestError(`item is not a function`)
+      new BadRequestError(`Password must be at least 8 characters`)
     );
   });
 
@@ -280,5 +280,30 @@ describe("User Model - register", () => {
     // Check that token is generated
     const token = User.generateAuthToken(user);
     expect(token).toBeTruthy();
+  });
+
+  test("register should fetch user by email", async () => {
+    // Mock the db query method to return a mock user
+    const mockUser = {
+      id: 1,
+      email: "test1@gmail.com",
+      firstname: "test",
+      lastname: "Test",
+      username: "testdoe",
+      points: 0
+    };
+    db.query.mockResolvedValueOnce({
+      rows: [mockUser]
+    });
+
+    // Call the fetchUserById function
+    const user = await User.fetchUserByEmailRegister(mockUser.email);
+    console.log(user);
+
+    // Check the returned user
+    expect(user).toEqual(mockUser);
+
+    // Check that the db query method was called exactly once
+    expect(db.query).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,8 +1,16 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Openai = require("../routes/openai");
+const express = require("express");
+const request = require("supertest");
+
 const { BadRequestError } = require("../errors");
 const db = require("../db"); // Assuming you have a database connection
 const jwt = require("jsonwebtoken"); // Import jwt module
+
+const app = express();
+app.use(express.json());
+app.use("/openai", Openai);
 
 jest.mock("../db"); // Mock the db module
 
@@ -15,6 +23,62 @@ const clearDatabase = async () => {
 // Run the clearDatabase function before each test
 beforeEach(async () => {
   await clearDatabase();
+});
+
+describe("API Routes", () => {
+  test("should create flashcards", async () => {
+    const response = await request(app).post("/openai/flashcards").send({
+      number: 5,
+      difficultyLevel: "medium",
+      subject: "Math",
+      optionalSection: "Algebra"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeTruthy();
+  }, 10000);
+
+  test("should create quizzes", async () => {
+    const response = await request(app).post("/openai/quiz").send({
+      number: 5,
+      difficultyLevel: "hard",
+      subject: "Science",
+      optionalSection: "Physics"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeTruthy();
+  }, 15000);
+
+  test("should respond to challenges", async () => {
+    const response = await request(app)
+      .post("/openai/challenge")
+      .send({
+        question: "What is the capital of France?",
+        answer: "Paris",
+        options: ["New York", "London", "Paris", "Dublin"]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeTruthy();
+  }, 10000);
+
+  test("should explain questions", async () => {
+    const response = await request(app)
+      .post("/openai/explain")
+      .send({
+        question: "What is photosynthesis?",
+        answer: "Photosynthesis is the process...",
+        options: ["Process A", "Process B", "Photosynthesis", "Process C"]
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toBeTruthy();
+  }, 10000);
 });
 
 describe("User Model - register", () => {

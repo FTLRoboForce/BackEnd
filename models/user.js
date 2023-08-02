@@ -92,6 +92,30 @@ class User {
     return user;
   }
 
+  static async updatePhoto(update) { 
+    const { email, photo } = update;
+    console.log("updatePhoto", email, photo);
+    const result = await db.query(
+      `UPDATE users SET
+          photo = $2
+          WHERE email = $1
+          RETURNING id,
+                  email,
+                  firstname AS "firstname",
+                  lastname AS "lastname",
+                  username,
+                  points,
+                  photo,
+                  totalquiz;
+          `,
+      [email, photo]
+    );
+    console.log(result.rows[0]);
+    const user = result.rows[0];
+
+    return user;
+  }
+
   /**
    * Fetch a user in the database by email
    *

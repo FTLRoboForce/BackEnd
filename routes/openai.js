@@ -135,4 +135,42 @@ router.post("/challenge", async function (req, res, next) {
   }
 });
 
+router.post("/explain", async function (req, res, next) {
+  const { question, answer, options } = req.body;
+  let content = `Explain to me why the answer to ${question} is ${answer}. The choices I was given are ${options}.`;
+  try {
+    const response = await openAi.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: `You are a teacher and you are explaining to a student why the answer to ${question} is ${answer}. The choices given are ${options}.`
+        },
+        {
+          role: "user",
+          content: content
+        }
+      ],
+      temperature: 0.6,
+      max_tokens: 1000,
+      top_p: 1.0,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    });
+    return res.status(200).json({
+      success: true,
+      console: console.log(response.data.choices[0].message.content),
+      data: response.data.choices[0].message.content
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({
+      success: false,
+      error: error.response
+        ? error.response.data
+        : "There was an issue on the server"
+    });
+  }
+});
+
 module.exports = router;

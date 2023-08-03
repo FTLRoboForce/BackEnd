@@ -32,7 +32,7 @@ const extractUserFromJwt = (req,res,next) => {
 const requrireAuthUser = (req,res,next) => {
     try{
         const {user} = res.locals
-        if (!user?.email){
+        if (!user?.email, user?.id,user?.username,user?.firstname,user?.lastname,user?.points,user?.totalquiz){
             throw new UnauthorizedError()
         }
         return next()

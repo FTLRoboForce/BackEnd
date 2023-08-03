@@ -4,6 +4,7 @@ const { BadRequestError, UnauthorizedError } = require("../utils/errors");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const secretKey = crypto.randomBytes(64).toString("hex");
+const { SECRET_KEY } = require("../config");
 
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
@@ -269,14 +270,14 @@ class User {
       totalquiz: user.totalquiz
     };
 
-    const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
     console.log("token", token);
     return token;
   }
 
   static async verifyAuthToken(token) {
     try {
-      const decoded = jwt.verify(token, secretKey);
+      const decoded = jwt.verify(token, SECRET_KEY);
       return decoded;
     } catch (err) {
       return null;

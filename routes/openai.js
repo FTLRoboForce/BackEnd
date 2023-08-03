@@ -1,6 +1,6 @@
 const express = require("express");
 const { Configuration, OpenAIApi } = require("openai");
-
+const security = require("../middleware/security");
 const router = express.Router();
 require("dotenv").config();
 
@@ -10,7 +10,7 @@ const config = new Configuration({
 
 const openAi = new OpenAIApi(config);
 
-router.post("/flashcards", async function (req, res, next) {
+router.post("/flashcards", security.requrireAuthUser, async function (req, res, next) {
   const { number, difficultyLevel, subject, optionalSection } = req.body;
   let content = `Create ${number} unique ${difficultyLevel} flashcard(s) about ${subject} specifically ${optionalSection}.
   Depending on the difficulty level, the questions should be more difficult. Medium should be more difficult than easy.
@@ -52,7 +52,7 @@ router.post("/flashcards", async function (req, res, next) {
   }
 });
 
-router.post("/quiz", async function (req, res, next) {
+router.post("/quiz",security.requrireAuthUser, async function (req, res, next) {
   const { number, difficultyLevel, subject, optionalSection } = req.body;
   let content = `Create ${number} unique ${difficultyLevel} multiple-choice questions about ${subject} specifically ${optionalSection}.
   Depending on the difficulty level, the questions should be more difficult. Hard questions should be more difficult than medium questions. 
@@ -64,7 +64,7 @@ router.post("/quiz", async function (req, res, next) {
       messages: [
         {
           role: "system",
-          content: `Response should be returned as an array of json objects where the response would look like:
+          content: `You are a teacher creating questions for students. Response should be returned as an array of json objects where the response would look like:
           The answer should be a string (the answer must be in the options and not as an index of the options) and the options should be an array of strings. 
           All keys and values must be enclosed in double quotes.
           ### store as an array of json objects where the question,options and answer are keys:
@@ -97,7 +97,7 @@ router.post("/quiz", async function (req, res, next) {
   }
 });
 
-router.post("/challenge", async function (req, res, next) {
+router.post("/challenge",security.requrireAuthUser, async function (req, res, next) {
   const { question, answer, options } = req.body;
   let content = `I believe the answer to ${question} is ${answer}. The choices I was given are ${options} Please only respond "true" if I am correct and "false" if I am incorrect.`;
   try {
@@ -135,7 +135,7 @@ router.post("/challenge", async function (req, res, next) {
   }
 });
 
-router.post("/explain", async function (req, res, next) {
+router.post("/explain",security.requrireAuthUser, async function (req, res, next) {
   const { question, answer, options } = req.body;
   let content = `Explain to me why the answer to ${question} is ${answer}. The choices I was given are ${options}.`;
   try {

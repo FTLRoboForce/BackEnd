@@ -10,7 +10,7 @@ const config = new Configuration({
 
 const openAi = new OpenAIApi(config);
 
-router.post("/flashcards", security.requrireAuthUser, async function (req, res, next) {
+router.post("/flashcards", security.requrireAuthUser,  async function (req, res, next) {
   const { number, difficultyLevel, subject, optionalSection } = req.body;
   let content = `Create ${number} unique ${difficultyLevel} flashcard(s) about ${subject} specifically ${optionalSection}.
   Depending on the difficulty level, the questions should be more difficult. Medium should be more difficult than easy.

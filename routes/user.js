@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
+const security = require("../middleware/security");
 const router = express.Router();
 
 router.post("/login", async function (req, res, next) {
@@ -23,7 +24,7 @@ router.post("/register", async function (req, res, next) {
   }
 });
 
-router.post("/profile", async function (req, res, next) {
+router.post("/profile", security.requrireAuthUser, async function (req, res, next) {
   try {
     const userInfo = await User.verifyAuthToken(req.body.token);
     res.json(userInfo);
@@ -51,7 +52,7 @@ router.post("/addquiz", async function (req, res, next) {
   }
 });
 
-router.post("/listquiz", async function (req, res, next) {
+router.post("/listquiz", security.requrireAuthUser, async function (req, res, next) {
   try {
     const quiz = await User.listQuiz(req.body);
     res.json(quiz);

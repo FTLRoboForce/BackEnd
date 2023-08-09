@@ -56,7 +56,7 @@ router.post("/quiz",security.requrireAuthUser, async function (req, res, next) {
   let content = `Create ${number} unique ${difficultyLevel} multiple-choice questions about ${subject} specifically ${optionalSection}.`;
   try {
     const response = await openAi.createChatCompletion({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",

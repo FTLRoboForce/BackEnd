@@ -15,7 +15,7 @@ router.post("/flashcards", security.requrireAuthUser,  async function (req, res,
   let content = `Create ${number} unique ${difficultyLevel} flashcard(s) about ${subject} specifically ${optionalSection}.`;
   try {
     const response = await openAi.createChatCompletion({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
@@ -31,7 +31,7 @@ router.post("/flashcards", security.requrireAuthUser,  async function (req, res,
         }
       ],
       max_tokens: 3500,
-      temperature: 1,
+      temperature: 0.8,
       top_p: 1.0,
       frequency_penalty: 0,
       presence_penalty: 0
@@ -112,7 +112,7 @@ router.post("/challenge",security.requrireAuthUser, async function (req, res, ne
         }
       ],
       temperature: 0.6,
-      max_tokens: 1000,
+      max_tokens: 200,
       top_p: 1.0,
       frequency_penalty: 0,
       presence_penalty: 0

@@ -12,18 +12,17 @@ const openAi = new OpenAIApi(config);
 
 router.post("/flashcards", security.requrireAuthUser,  async function (req, res, next) {
   const { number, difficultyLevel, subject, optionalSection } = req.body;
-  let content = `Create ${number} unique ${difficultyLevel} flashcard(s) about ${subject} specifically ${optionalSection}.
-  Depending on the difficulty level, the questions should be more difficult. Medium should be more difficult than easy.
-   Hard questions should be more difficult than medium questions. 
-  Medium questions should be meant for graduate students and hard questions should be meant for experts.
-  `;
+  let content = `Create ${number} unique ${difficultyLevel} flashcard(s) about ${subject} specifically ${optionalSection}.`;
   try {
     const response = await openAi.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
-          content: `Response should be returned as an array of json objects where the response would look like:
+          content: `Depending on the difficulty level, the questions should be more difficult. Medium should be more difficult than easy.
+          Hard questions should be more difficult than medium questions. 
+          Medium questions should be meant for college students/interns and hard questions should be meant for experts.
+          Response should be returned as an array of json objects where the response would look like:
           [{"question" : "What is the general formula for alkane?", "answer": "CnH2n+2"}]`
         },
         {
@@ -31,8 +30,8 @@ router.post("/flashcards", security.requrireAuthUser,  async function (req, res,
           content: content
         }
       ],
-      max_tokens: 1000,
-      temperature: 0.8,
+      max_tokens: 3500,
+      temperature: 1,
       top_p: 1.0,
       frequency_penalty: 0,
       presence_penalty: 0
@@ -54,17 +53,16 @@ router.post("/flashcards", security.requrireAuthUser,  async function (req, res,
 
 router.post("/quiz",security.requrireAuthUser, async function (req, res, next) {
   const { number, difficultyLevel, subject, optionalSection } = req.body;
-  let content = `Create ${number} unique ${difficultyLevel} multiple-choice questions about ${subject} specifically ${optionalSection}.
-  Depending on the difficulty level, the questions should be more difficult. Hard questions should be more difficult than medium questions. 
-  Medium questions should be meant for graduate students and hard questions should be meant for experienced professionals in their respective fields .
-   Easy questions should be meant for high school students.`;
+  let content = `Create ${number} unique ${difficultyLevel} multiple-choice questions about ${subject} specifically ${optionalSection}.`;
   try {
     const response = await openAi.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
-          content: `You are a teacher creating questions for students. Response should be returned as an array of json objects where the response would look like:
+          content: `You are a teacher creating questions for students.Depending on the difficulty level, the questions should be more difficult. Hard questions should be more difficult than medium questions. 
+          Medium questions should be meant for graduate students and hard questions should be meant for experienced professionals in their respective fields .
+          Easy questions should be meant for high school students. Response should be returned as an array of json objects where the response would look like:
           The answer should be a string (the answer must be in the options and not as an index of the options) and the options should be an array of strings. 
           All keys and values must be enclosed in double quotes.
           ### store as an array of json objects where the question,options and answer are keys:
@@ -75,8 +73,8 @@ router.post("/quiz",security.requrireAuthUser, async function (req, res, next) {
           content: content
         }
       ],
-      temperature: 0.6,
-      max_tokens: 1000,
+      temperature: 0.8,
+      max_tokens: 3500,
       top_p: 1.0,
       frequency_penalty: 0,
       presence_penalty: 0
@@ -102,7 +100,7 @@ router.post("/challenge",security.requrireAuthUser, async function (req, res, ne
   let content = `I believe the answer to ${question} is ${answer}. The choices I was given are ${options} Please only respond "true" if I am correct and "false" if I am incorrect.`;
   try {
     const response = await openAi.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
@@ -136,15 +134,15 @@ router.post("/challenge",security.requrireAuthUser, async function (req, res, ne
 });
 
 router.post("/explain",security.requrireAuthUser, async function (req, res, next) {
-  const { question, answer, options } = req.body;
-  let content = `Explain to me why the answer to ${question} is ${answer}. The choices I was given are ${options}.`;
+  const { question, selectedOption, options } = req.body;
+  let content = `Explain to me why the answer to ${question} is ${selectedOption}`;
   try {
     const response = await openAi.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: `You are a teacher and you are explaining to a student why the answer to ${question} is ${answer}. The choices given are ${options}.`
+          content: `You are a teacher and you are explaining to a student.`
         },
         {
           role: "user",

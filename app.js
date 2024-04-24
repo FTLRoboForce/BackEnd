@@ -12,7 +12,9 @@ const app = express();
 // enable cross-origin resource sharing for all origins for all requests
 // NOTE: in production, we'll want to restrict this to only the origin
 // hosting our frontend.
-app.use(cors());
+app.use(cors({
+    origin: 'https://brainforce-ui.onrender.com' // or '*' for all origins
+}));
 // parse incoming requests with JSON payloads
 app.use(express.json());
 // log requests info
